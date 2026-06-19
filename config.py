@@ -15,7 +15,7 @@ VIEWPORT_WIDTH = int(os.getenv("VIEWPORT_WIDTH", "1280"))
 VIEWPORT_HEIGHT = int(os.getenv("VIEWPORT_HEIGHT", "720"))
 
 # Agent Configuration
-MODEL_NAME = os.getenv("MODEL_NAME", "mixtral-8x7b-32768")
+MODEL_NAME = os.getenv("MODEL_NAME", "llama-3.3-70b-versatile")
 MAX_ITERATIONS = int(os.getenv("MAX_ITERATIONS", "10"))
 TEMPERATURE = float(os.getenv("TEMPERATURE", "0.7"))
 

@@ -161,7 +161,7 @@ async def run_task(
         print(f"\nResult:\n{result}")
     except Exception as e:
         print(f"\n❌ Task failed: {e}")
-        logger.error(f"Task execution failed: {e}", exc_info=True)
+        logger.exception("Task execution failed")
         sys.exit(1)
 
 
@@ -302,7 +302,7 @@ async def main():
         sys.exit(0)
     except Exception as e:
         print(f"\n❌ Error: {e}")
-        logger.error(f"CLI error: {e}", exc_info=True)
+        logger.exception("CLI error")
         sys.exit(1)
 
 

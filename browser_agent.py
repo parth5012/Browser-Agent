@@ -183,8 +183,7 @@ Current task: """
             )
 
             # Run the graph
-            final_state = await asyncio.to_thread(
-                self.graph.invoke,
+            final_state = await self.graph.ainvoke(
                 initial_state
             )
 
@@ -194,7 +193,7 @@ Current task: """
             return result
 
         except Exception as e:
-            logger.error(f"Task execution failed: {e}", exc_info=True)
+            logger.exception("Task execution failed")
             raise
         finally:
             await self.browser_controller.close()

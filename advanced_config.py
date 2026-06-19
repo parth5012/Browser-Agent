@@ -86,7 +86,7 @@ class BrowserConfig:
 @dataclass
 class AgentConfig:
     """Advanced agent configuration."""
-    model: str = "mixtral-8x7b-32768"
+    model: str = "llama-3.3-70b-versatile"
     temperature: float = 0.7
     max_tokens: int = 2048
     top_p: float = 0.95

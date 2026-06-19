@@ -4,7 +4,7 @@ These tools are used by the agent to interact with the browser.
 """
 
 from typing import Optional
-from langchain.tools import Tool
+from langchain_core.tools import StructuredTool
 from langchain_community.tools import tool
 from pydantic import BaseModel, Field
 from browser_controller import BrowserController
@@ -57,54 +57,88 @@ class BrowserTools:
         self.controller = browser_controller
         logger.info("BrowserTools initialized")
 
-    def create_tools(self) -> list[Tool]:
+    @staticmethod
+    def _make_sync(async_func):
+        """Run an async function synchronously in a new event loop in a separate thread."""
+        import asyncio
+        import threading
+        
+        def wrapper(*args, **kwargs):
+            res = []
+            err = []
+            def run():
+                try:
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+                    res.append(loop.run_until_complete(async_func(*args, **kwargs)))
+                except Exception as e:
+                    err.append(e)
+                finally:
+                    loop.close()
+            t = threading.Thread(target=run)
+            t.start()
+            t.join()
+            if err:
+                raise err[0]
+            return res[0]
+        return wrapper
+
+    def create_tools(self) -> list[StructuredTool]:
         """Create and return all browser tools."""
         tools = [
-            Tool(
+            StructuredTool.from_function(
                 name="navigate",
-                func=self._navigate,
+                func=self._make_sync(self._navigate),
+                coroutine=self._navigate,
                 description="Navigate to a URL in the browser. Use this to go to websites.",
                 args_schema=NavigateInput,
             ),
-            Tool(
+            StructuredTool.from_function(
                 name="take_screenshot",
-                func=self._take_screenshot,
+                func=self._make_sync(self._take_screenshot),
+                coroutine=self._take_screenshot,
                 description="Take a screenshot of the current page. Use this to see what's on the screen.",
                 args_schema=BrowserToolInput,
             ),
-            Tool(
+            StructuredTool.from_function(
                 name="click",
-                func=self._click,
+                func=self._make_sync(self._click),
+                coroutine=self._click,
                 description="Click on an element using CSS selector. Useful for interacting with buttons, links, etc.",
                 args_schema=ClickInput,
             ),
-            Tool(
+            StructuredTool.from_function(
                 name="type",
-                func=self._type,
+                func=self._make_sync(self._type),
+                coroutine=self._type,
                 description="Type text into an input field or textarea. Provide selector and text.",
                 args_schema=TypeInput,
             ),
-            Tool(
+            StructuredTool.from_function(
                 name="get_page_content",
-                func=self._get_page_content,
+                func=self._make_sync(self._get_page_content),
+                coroutine=self._get_page_content,
                 description="Get the HTML content of the current page. Useful for analyzing page structure.",
                 args_schema=BrowserToolInput,
             ),
-            Tool(
+            StructuredTool.from_function(
                 name="wait_for_element",
-                func=self._wait_for_element,
+                func=self._make_sync(self._wait_for_element),
+                coroutine=self._wait_for_element,
                 description="Wait for an element to appear on the page. Useful for handling dynamic content.",
                 args_schema=WaitInput,
             ),
-            Tool(
+            StructuredTool.from_function(
                 name="scroll",
-                func=self._scroll,
+                func=self._make_sync(self._scroll),
+                coroutine=self._scroll,
                 description="Scroll the page up or down. Useful for loading more content.",
                 args_schema=ScrollInput,
             ),
-            Tool(
+            StructuredTool.from_function(
                 name="execute_javascript",
-                func=self._execute_javascript,
+                func=self._make_sync(self._execute_javascript),
+                coroutine=self._execute_javascript,
                 description="Execute arbitrary JavaScript code in the browser. Advanced use only.",
                 args_schema=ExecuteScriptInput,
             ),

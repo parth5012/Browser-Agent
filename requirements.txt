@@ -4,7 +4,7 @@ langgraph
 langchain-community
 
 # LLM Provider
-groq
+langchain-groq
 
 # Browser Automation
 playwright

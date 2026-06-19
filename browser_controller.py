@@ -11,7 +11,6 @@ from logger_config import logger
 
 try:
     from browser_use import Agent, Browser
-    from browser_use.browser.browser import BrowserConfig
 except ImportError:
     logger.warning("browser-use not installed. Install with: pip install browser-use")
     Browser = None
@@ -51,13 +50,10 @@ class BrowserController:
             if Browser is None:
                 raise ImportError("browser-use library not installed")
             
-            config = BrowserConfig(
+            self.browser = Browser(
                 headless=self.headless,
-                viewport_width=self.viewport_width,
-                viewport_height=self.viewport_height,
+                viewport={"width": self.viewport_width, "height": self.viewport_height}
             )
-            
-            self.browser = Browser(config=config)
             logger.info("Browser initialized successfully")
             return True
         except Exception as e:
