@@ -1,0 +1,19 @@
+# LangChain & LangGraph
+langchain
+langgraph
+langchain-community
+
+# LLM Provider
+groq
+
+# Browser Automation
+playwright
+python-dotenv
+
+# Utilities
+pydantic
+requests
+aiohttp
+
+# Logging & Monitoring
+loguru
